@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Likha Cebu: a loom. Graphite ground, tangerine thread — the palette's
+       whole idea in one mark. Reads at 1024px and still as a woven block at 48. -->
+  <rect width="1024" height="1024" fill="#1a1a19"/>
+  <g stroke-linecap="round" fill="none">
+    <!-- warp, neutral -->
+    <g stroke="#8e8e8c" stroke-width="26" opacity=".5">
+      <path d="M330 232v560M432 232v560M534 232v560M636 232v560"/>
+    </g>
+    <!-- weft in the accent, denser toward the base: cloth coming off the loom -->
+    <g stroke="#f47900" stroke-width="46">
+      <path d="M262 706h500M262 604h500"/>
+    </g>
+    <g stroke="#f47900" stroke-width="46" opacity=".62">
+      <path d="M262 502h340"/>
+    </g>
+    <g stroke="#f47900" stroke-width="46" opacity=".3">
+      <path d="M262 400h180"/>
+    </g>
+  </g>
+  <!-- shuttle -->
+  <path d="M560 360h150l52 42-52 42H560l-52-42z" fill="#f3f3f2"/>
+  <circle cx="648" cy="402" r="15" fill="#1a1a19"/>
+</svg>

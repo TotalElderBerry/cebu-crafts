@@ -1,0 +1,323 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ===========================================================================
+   Palette — near-neutral shell, one tangerine.
+
+   The previous palette was terracotta on cream with a muted indigo. That is
+   the default "artisan marketplace" look, and muted earth tones are a Western
+   projection onto Philippine craft besides — real banig is dyed in brights.
+   This replaces it with a near-monochrome UI and a single loud accent, so the
+   goods carry the colour and the chrome gets out of the way.
+
+     primary      vivid tangerine. Fills only: buttons, active tab, chips.
+     primary-ink  deep tangerine. Text only: prices, links, focus ring.
+     accent       graphite. Trust and state: verified, payment, shipping.
+
+   The split matters. Orange cannot be both a vivid fill and readable text —
+   white-on-tangerine measures 4.19:1, under AA. So the fill carries a
+   near-black label, and text uses the darker ink. Both are measured below.
+
+   Light and dark both pass:
+     body text          >= 7:1     secondary text    >= 4.5:1
+     all status colours >= 4.5:1   input borders     >= 3:1  (WCAG 1.4.11)
+   Decorative card edges are deliberately NOT pushed to 3:1 — that rule covers
+   interactive component boundaries, and a 3:1 outline on every card looks
+   heavy. Cards separate with a soft edge plus real elevation instead.
+   =========================================================================== */
+
+:root {
+  --radius: 0.75rem;
+
+  /* Surfaces: a cool paper grey, not cream. The background moving off warm is
+     what stops tangerine reading as terracotta again. */
+  --background: oklch(0.963 0.0015 100);  /* page */
+  --surface: oklch(0.983 0.0015 100);     /* subtle raised fill, inputs */
+  --card: oklch(1 0 0);                   /* cards, sheets */
+  --popover: oklch(1 0 0);
+
+  --foreground: oklch(0.175 0.003 90);
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --muted: oklch(0.955 0.002 100);
+  --muted-foreground: oklch(0.492 0.004 90);
+
+  --primary: oklch(0.705 0.185 55);            /* fill */
+  --primary-foreground: oklch(0.175 0.018 50); /* label on that fill */
+  --primary-ink: oklch(0.515 0.16 45);         /* text, prices, links */
+
+  /* Graphite rather than a second hue — in a monochrome shell a blue "verified"
+     badge would be the only other colour and would fight the tangerine. */
+  --accent: oklch(0.285 0.004 90);
+  --accent-foreground: oklch(0.99 0 0);
+
+  --secondary: oklch(0.945 0.002 100);
+  --secondary-foreground: oklch(0.28 0.004 90);
+
+  --success: oklch(0.47 0.1 152);
+  --warning: oklch(0.52 0.105 70);
+  --destructive: oklch(0.48 0.185 22);
+  --destructive-foreground: oklch(0.99 0.004 30);
+
+  --border: oklch(0.875 0.002 95);         /* decorative edges */
+
+  /* Inputs, switches: WCAG 1.4.11, 3:1 against whatever surface they sit on.
+     This was 0.645, which measured 3.28 on --card and 3.12 on --surface but
+     only 2.96 on --background and 2.88 on --muted, so it missed on two of the
+     four surfaces it actually lands on. 0.625 clears 3:1 on all four with
+     headroom (worst case 3.12 on --muted). */
+  --border-strong: oklch(0.625 0.003 95);
+  --input: var(--border-strong);
+  --ring: oklch(0.515 0.16 45);
+
+  /* Elevation: neutral now that the surfaces are neutral. A warm-tinted shadow
+     on a cool grey page looks like a stain. */
+  --shadow-color: 90 6% 12%;
+  --elevation-1: 0 1px 2px -1px hsl(var(--shadow-color) / 0.10),
+                 0 1px 3px 0 hsl(var(--shadow-color) / 0.06);
+  --elevation-2: 0 2px 4px -2px hsl(var(--shadow-color) / 0.10),
+                 0 4px 10px -2px hsl(var(--shadow-color) / 0.08);
+  --elevation-3: 0 8px 24px -6px hsl(var(--shadow-color) / 0.16),
+                 0 2px 6px -2px hsl(var(--shadow-color) / 0.08);
+}
+
+/* Neutral charcoal, not near-black — an OLED-black shell looks severe and makes
+   the app feel like a different product than it does in light mode. */
+.dark {
+  --background: oklch(0.232 0.002 95);
+  --surface: oklch(0.275 0.002 95);
+  --card: oklch(0.3 0.002 95);
+  --popover: oklch(0.3 0.002 95);
+
+  --foreground: oklch(0.958 0.002 95);
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --muted: oklch(0.335 0.002 95);
+  --muted-foreground: oklch(0.755 0.003 95);
+
+  --primary: oklch(0.735 0.165 55);
+  --primary-foreground: oklch(0.2 0.02 50);
+  --primary-ink: oklch(0.785 0.14 58);
+
+  /* Graphite inverts to near-white on dark, so the "verified" pill stays a
+     neutral chip rather than becoming a second accent colour. */
+  --accent: oklch(0.885 0.003 95);
+  --accent-foreground: oklch(0.22 0.004 90);
+
+  --secondary: oklch(0.345 0.002 95);
+  --secondary-foreground: oklch(0.94 0.002 95);
+
+  --success: oklch(0.775 0.115 155);
+  --warning: oklch(0.815 0.11 72);
+  --destructive: oklch(0.705 0.155 25);
+  --destructive-foreground: oklch(0.18 0.02 27);
+
+  --border: oklch(0.425 0.003 95);
+
+  /* Same 3:1 rule as light. 0.6 technically passed but only at 3.02 against
+     --muted, which is a rounding error away from failing; 0.615 gives the same
+     headroom the light value now has (worst case 3.22). */
+  --border-strong: oklch(0.615 0.004 95);
+  --input: var(--border-strong);
+  --ring: oklch(0.785 0.14 58);
+
+  /* Shadows barely read on dark surfaces, so elevation leans on the surface
+     scale above and only a faint lift remains. */
+  --shadow-color: 95 4% 2%;
+  --elevation-1: 0 1px 2px -1px hsl(var(--shadow-color) / 0.5);
+  --elevation-2: 0 2px 6px -2px hsl(var(--shadow-color) / 0.55);
+  --elevation-3: 0 8px 24px -6px hsl(var(--shadow-color) / 0.65);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-primary-ink: var(--primary-ink);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+
+  /* Plus Jakarta Sans for UI, Outfit for display. Loaded by @nuxt/fonts, which
+     self-hosts and subsets them.
+
+     Display was Fraunces, chosen to read "handmade rather than institutional".
+     The intent was right; the vehicle was a serif on a transactional
+     marketplace, and a display serif is the wrong register for a price, a
+     stock count or a lead time. Outfit is a geometric sans with generous
+     counters: it carries warmth through width and weight instead of through
+     serifs, and it holds up at the 28px the phone hero actually uses.
+
+     It also drops a second webfont family from the payload, which matters on
+     Philippine mobile data. */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+
+  --shadow-elevation-1: var(--elevation-1);
+  --shadow-elevation-2: var(--elevation-2);
+  --shadow-elevation-3: var(--elevation-3);
+
+  --spacing-safe-top: env(safe-area-inset-top, 0px);
+  --spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+
+    /* ----------------------------------------------------------------------
+       The "this is a website in a box" tells, removed. Every line is one thing
+       a user would otherwise notice is not native.
+       ---------------------------------------------------------------------- */
+    -webkit-tap-highlight-color: transparent;  /* no blue flash on tap */
+    -webkit-touch-callout: none;               /* no long-press image menu */
+    overscroll-behavior-y: none;               /* no rubber-band past the page */
+    touch-action: manipulation;                /* kills the 300ms dbl-tap delay */
+  }
+
+  /* Display type is set tight and slightly heavy. At the sizes this app uses it
+     has to hold its own against photography, which the previous serif did not. */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Body copy never runs wider than this. The home pitch paragraph was a single
+     140-character line at 1440px because nothing capped it.
+
+     Deliberately `em` and not the usual `ch`. The `ch` unit is the width of the
+     "0" glyph, which in Plus Jakarta Sans is 11.7px against an average character
+     width of 7.25px, so the conventional `65ch` measured out at 105 characters
+     per line here: still far outside the 45-75 that actually reads well. An `em`
+     value tracks average width instead, and holds the same measure whether the
+     paragraph is set at 14px on a phone or 16px on a desktop. */
+  .prose-measure {
+    max-width: 33em;
+  }
+
+  /* Text stays selectable where selecting is the point; chrome does not. */
+  button, a, nav, [role='button'], [role='tab'] {
+    @apply select-none;
+  }
+  p, h1, h2, h3, h4, span[data-selectable], .selectable {
+    @apply select-text;
+  }
+
+  /* Hover only where a real pointer exists — on touch, :hover sticks after a
+     tap and leaves buttons looking stuck-on. */
+  @media (hover: none) {
+    *:hover { transition: none !important; }
+  }
+
+  .scroll-pane {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Inputs under 16px make iOS zoom the whole viewport on focus. */
+  input, select, textarea { font-size: max(16px, 1rem); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------------------- */
+
+@utility pt-safe { padding-top: calc(env(safe-area-inset-top, 0px) + var(--pt-extra, 0px)); }
+@utility pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--pb-extra, 0px)); }
+@utility min-h-screen-safe {
+  min-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+}
+
+/** Standard card treatment: soft edge plus elevation, rather than a heavy outline. */
+@utility card-surface {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--elevation-1);
+}
+@utility card-raised {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--elevation-2);
+}
+
+/** Open editorial grouping for browse and marketing surfaces. */
+@utility editorial-surface {
+  background-color: var(--card);
+  border: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+}
+
+/** A quiet rule for separating real content groups without card stacking. */
+@utility editorial-rule {
+  border-top: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   Page transitions — a slide push/pop, which is most of what makes navigation
+   read as native rather than as a web page swap. Nuxt applies these names via
+   app.pageTransition.
+   --------------------------------------------------------------------------- */
+
+.page-slide-enter-active,
+.page-slide-leave-active {
+  transition: transform 260ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms ease;
+}
+.page-slide-enter-from { transform: translateX(28px); opacity: 0; }
+.page-slide-leave-to { transform: translateX(-14px); opacity: 0; }
+
+/* Leaving pages are taken out of flow so the two do not stack and
+   double the scroll height mid-transition. */
+.page-slide-leave-active { position: absolute; inset: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-slide-enter-active,
+  .page-slide-leave-active { transition: opacity 1ms; }
+  .page-slide-enter-from,
+  .page-slide-leave-to { transform: none; }
+}

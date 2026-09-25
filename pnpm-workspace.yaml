@@ -1,0 +1,23 @@
+allowBuilds:
+  esbuild: set this to true or false
+  sharp: set this to true or false
+  vue-demi: set this to true or false
+
+# esbuild and vue-demi ship prebuilt artefacts (esbuild.exe lives inside the
+# @esbuild/<platform> package), so their postinstall scripts are not needed.
+# Declaring them silences pnpm's "ignored build scripts" error, which otherwise
+# makes any tool that shells out to `pnpm add` think it failed.
+ignoredBuiltDependencies:
+  - esbuild
+  - vue-demi
+
+# sharp genuinely needs its install script — it fetches the platform binary.
+# @capacitor/assets depends on it for icon and splash generation.
+onlyBuiltDependencies:
+  - sharp
+
+# @capacitor/assets pins sharp ^0.32, whose install script fetches a binary and
+# fails under pnpm's strict node_modules layout. sharp >=0.33 ships platform
+# binaries as optional dependencies instead, so no install script is needed.
+overrides:
+  sharp: ^0.34.0
